@@ -1,0 +1,28 @@
+name: worldoracle
+description: "NPC contradiction detector and belief repair for game worlds"
+author: "Sandeep Alluru"
+
+inputs:
+  npc_id:
+    description: "NPC ID to check"
+    required: false
+    default: ""
+  db:
+    description: "Path to worldoracle database"
+    required: false
+    default: ".worldoracle/oracle.db"
+
+runs:
+  using: "composite"
+  steps:
+    - name: Install worldoracle
+      shell: bash
+      run: pip install -e "${{ github.action_path }}"
+    - name: Check NPC beliefs
+      shell: bash
+      run: |
+        if [ -n "${{ inputs.npc_id }}" ]; then
+          worldoracle --db "${{ inputs.db }}" check "${{ inputs.npc_id }}"
+        else
+          worldoracle --db "${{ inputs.db }}" status
+        fi

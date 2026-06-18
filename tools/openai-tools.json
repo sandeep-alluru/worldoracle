@@ -1,0 +1,86 @@
+[
+  {
+    "type": "function",
+    "function": {
+      "name": "add_predicate",
+      "description": "Add a belief predicate to an NPC's world model. Call this when a game event, quest trigger, or observation updates what an NPC believes about a subject.",
+      "strict": true,
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "npc_id": {
+            "type": "string",
+            "description": "Identifier for the NPC whose belief is being updated (e.g. 'guard-1', 'blacksmith')"
+          },
+          "subject": {
+            "type": "string",
+            "description": "The entity the NPC has a belief about (e.g. 'king', 'bridge-3', 'player')"
+          },
+          "attribute": {
+            "type": "string",
+            "description": "The property of the subject (e.g. 'alive', 'passable', 'allied')"
+          },
+          "value": {
+            "type": "string",
+            "description": "The value of the attribute (e.g. 'true', 'false', 'broken', '42')"
+          },
+          "source": {
+            "type": "string",
+            "description": "Origin of the belief: 'observation', 'rumor', 'quest-giver', etc.",
+            "default": ""
+          },
+          "confidence": {
+            "type": "number",
+            "description": "Confidence in this belief, 0.0 to 1.0",
+            "default": 1.0
+          },
+          "timestamp": {
+            "type": "number",
+            "description": "Unix timestamp when this belief was acquired",
+            "default": 0.0
+          }
+        },
+        "required": ["npc_id", "subject", "attribute", "value"],
+        "additionalProperties": false
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "check_beliefs",
+      "description": "Detect contradictions in an NPC's current belief state. Returns all pairs of conflicting predicates (same subject+attribute, different values). Call this before generating NPC dialogue or making story decisions.",
+      "strict": true,
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "npc_id": {
+            "type": "string",
+            "description": "Identifier for the NPC to check for contradictions"
+          }
+        },
+        "required": ["npc_id"],
+        "additionalProperties": false
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "repair_contradictions",
+      "description": "Generate repair frames for all contradictions in an NPC's belief state. Uses strategies prefer_newer, prefer_higher_confidence, and prefer_observation to resolve conflicts. Call this after check_beliefs finds contradictions.",
+      "strict": true,
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "npc_id": {
+            "type": "string",
+            "description": "Identifier for the NPC whose belief contradictions should be repaired"
+          }
+        },
+        "required": ["npc_id"],
+        "additionalProperties": false
+      }
+    }
+  }
+]
