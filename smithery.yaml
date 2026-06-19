@@ -1,0 +1,19 @@
+name: worldoracle
+displayName: "WorldOracle"
+description: "NPC contradiction detector and belief repair for game worlds"
+license: MIT
+homepage: https://github.com/sandeep-alluru/worldoracle
+repository: https://github.com/sandeep-alluru/worldoracle
+keywords:
+  - ai-agents
+  - game-ai
+  - npc
+  - belief-revision
+  - mcp
+startCommand:
+  type: stdio
+  configSchema:
+    type: object
+    properties: {}
+  commandFunction: |-
+    (config) => ({ command: "python", args: ["-m", "worldoracle.mcp_server"] })
