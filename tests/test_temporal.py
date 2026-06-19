@@ -1,8 +1,8 @@
 """Tests for worldoracle.temporal."""
 import time
-import pytest
-from worldoracle.store import WorldOracleStore
+
 from worldoracle.predicate import WorldPredicate
+from worldoracle.store import WorldOracleStore
 from worldoracle.temporal import BeliefSnapshot, TemporalBeliefStore
 
 
@@ -102,3 +102,26 @@ def test_get_belief_history_json_string_value():
     assert len(history) >= 1
     # Value should be correctly resolved (json string -> str)
     assert isinstance(history[0].value, str)
+
+
+def test_deserialize_value_plain_string():
+    """_deserialize_value returns plain strings unchanged (non-JSON)."""
+    store = WorldOracleStore(":memory:")
+    ts = TemporalBeliefStore(store)
+    # Plain strings that are not valid JSON should be returned as-is
+    assert ts._deserialize_value("plain text") == "plain text"
+    assert ts._deserialize_value("not-json!") == "not-json!"
+
+
+def test_get_belief_at_plain_string_value():
+    """get_belief_at correctly handles a plain (non-JSON) string value."""
+    store = WorldOracleStore(":memory:")
+    pred = make_pred(value="some-plain-value")
+    store.save_predicate("npc1", pred)
+    ts = TemporalBeliefStore(store)
+    ts.record_snapshot()
+    snap = ts.get_belief_at("king", "alive", time.time() + 10)
+    assert snap is not None
+    # The value stored was json.dumps("some-plain-value") = '"some-plain-value"'
+    # _deserialize_value should parse it back to the plain string
+    assert "some-plain-value" in str(snap.value)

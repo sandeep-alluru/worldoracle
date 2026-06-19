@@ -47,12 +47,17 @@ class TemporalBeliefStore:
         self._conn.commit()
 
     def record_snapshot(self) -> int:
-        """Record current belief state as a timestamped snapshot. Returns snapshot ID."""
+        """Record current belief state as a timestamped snapshot. Returns snapshot ID.
+
+        Raises RuntimeError if the database fails to assign a row ID.
+        """
         now = time.time()
         cur = self._conn.execute(
             "INSERT INTO snapshot_registry (taken_at) VALUES (?)", (now,)
         )
         snap_id = cur.lastrowid
+        if snap_id is None:
+            raise RuntimeError("Failed to insert snapshot registry row: no rowid returned")
         # Get all current predicates
         rows = self._conn.execute("SELECT * FROM predicates").fetchall()
         for row in rows:
@@ -65,6 +70,14 @@ class TemporalBeliefStore:
             )
         self._conn.commit()
         return snap_id
+
+    @staticmethod
+    def _deserialize_value(v: str) -> str:
+        """Deserialize a stored value, handling JSON-encoded strings."""
+        try:
+            return json.loads(v)  # type: ignore[return-value]
+        except (json.JSONDecodeError, ValueError):
+            return v
 
     def get_belief_at(
         self, subject: str, predicate: str, timestamp: float
@@ -82,9 +95,7 @@ class TemporalBeliefStore:
             timestamp=row["snapshot_ts"],
             subject=row["subject"],
             predicate=row["attribute"],
-            value=json.loads(row["value"])
-            if row["value"].startswith(('"', "[", "{"))
-            else row["value"],
+            value=self._deserialize_value(row["value"]),
             confidence=row["confidence"],
             source=row["source"],
         )
@@ -99,17 +110,11 @@ class TemporalBeliefStore:
         ).fetchall()
         result = []
         for row in rows:
-            val = row["value"]
-            try:
-                parsed = json.loads(val)
-                val = str(parsed)
-            except (json.JSONDecodeError, TypeError):
-                pass
             result.append(BeliefSnapshot(
                 timestamp=row["snapshot_ts"],
                 subject=row["subject"],
                 predicate=row["attribute"],
-                value=val,
+                value=self._deserialize_value(row["value"]),
                 confidence=row["confidence"],
                 source=row["source"],
             ))

@@ -18,17 +18,19 @@ from __future__ import annotations
 import sys
 from typing import Any
 
+try:
+    import mcp.server.stdio as _mcp_stdio
+    import mcp.types as _mcp_types
+    from mcp.server import Server as _Server
 
-def _require_mcp() -> Any:
-    """Import MCP or exit with a helpful message."""
-    try:
-        import mcp
-        import mcp.server.stdio
-        import mcp.types as types
-        from mcp.server import Server as _Server
+    _HAS_MCP = True
+except ImportError:
+    _HAS_MCP = False
 
-        return mcp, types, _Server
-    except ImportError:
+
+def _require_mcp() -> None:
+    """Call sys.exit(1) if the mcp package is not installed."""
+    if not _HAS_MCP:
         print(
             "MCP server requires: pip install 'worldoracle[mcp]'",
             file=sys.stderr,
@@ -38,7 +40,10 @@ def _require_mcp() -> Any:
 
 def run_server() -> None:
     """Start the MCP server on stdio."""
-    mcp_mod, types, server_cls = _require_mcp()
+    _require_mcp()
+    mcp_stdio = _mcp_stdio  # type: ignore[name-defined]
+    types = _mcp_types  # type: ignore[name-defined]
+    server_cls = _Server  # type: ignore[name-defined]
 
     from worldoracle.predicate import (
         BeliefRepairer,
@@ -168,7 +173,7 @@ def run_server() -> None:
     import asyncio
 
     async def _main() -> None:
-        async with mcp_mod.server.stdio.stdio_server() as (
+        async with mcp_stdio.stdio_server() as (
             read_stream,
             write_stream,
         ):

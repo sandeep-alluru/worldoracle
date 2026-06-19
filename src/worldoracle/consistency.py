@@ -47,7 +47,15 @@ def full_consistency_check(store: WorldOracleStore, auto_repair: bool = True) ->
             frame = repairer.repair(pred_a, pred_b)
             store.save_repair(frame)
             # Remove the "losing" predicate
-            loser = pred_a if pred_a.value != frame.resolved_value else pred_b
+            # resolved_value is the winner's value; if both or neither match (edge case),
+            # fall back to deleting the less-confident predicate.
+            if pred_a.value == frame.resolved_value and pred_b.value != frame.resolved_value:
+                loser = pred_b
+            elif pred_b.value == frame.resolved_value and pred_a.value != frame.resolved_value:
+                loser = pred_a
+            else:
+                # Neither or both match resolved_value — delete the less-confident one
+                loser = pred_a if pred_a.confidence <= pred_b.confidence else pred_b
             store._conn.execute("DELETE FROM predicates WHERE id=?", (loser.id,))
             store._conn.commit()
             contradictions_repaired += 1

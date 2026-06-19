@@ -1,8 +1,7 @@
 """Tests for worldoracle.consistency."""
-import pytest
-from worldoracle.store import WorldOracleStore
-from worldoracle.predicate import WorldPredicate
 from worldoracle.consistency import ConsistencyReport, full_consistency_check
+from worldoracle.predicate import WorldPredicate
+from worldoracle.store import WorldOracleStore
 
 
 def make_pred(subject, attribute, value, confidence=1.0, ts=1.0, source="obs"):
@@ -66,3 +65,25 @@ def test_most_contested():
     report = full_consistency_check(store, auto_repair=False)
     assert isinstance(report.most_contested, list)
     assert len(report.most_contested) <= 5
+
+
+def test_consistency_repair_pred_b_wins():
+    """When pred_b has a newer timestamp, it wins and the elif branch picks pred_a as loser."""
+    store = WorldOracleStore(":memory:")
+    # pred_b has higher timestamp => BeliefRepairer picks pred_b as winner
+    # => resolved_value == pred_b.value => elif branch deletes pred_a
+    store.save_predicate("npc1", make_pred("king", "alive", True, confidence=0.9, ts=1.0))
+    store.save_predicate("npc1", make_pred("king", "alive", False, confidence=0.9, ts=2.0))
+    report = full_consistency_check(store, auto_repair=True)
+    assert report.contradictions_repaired >= 1
+
+
+def test_consistency_repair_equal_confidence_fallback():
+    """When both predicates have equal confidence and timestamps, the fallback
+    branch in loser selection is used (delete the less-confident pred_a when tied)."""
+    store = WorldOracleStore(":memory:")
+    # Same timestamp, same confidence: fallback branch in repair loser selection
+    store.save_predicate("npc1", make_pred("king", "alive", True, confidence=0.8, ts=1.0))
+    store.save_predicate("npc1", make_pred("king", "alive", False, confidence=0.8, ts=1.0))
+    report = full_consistency_check(store, auto_repair=True)
+    assert report.contradictions_repaired >= 1

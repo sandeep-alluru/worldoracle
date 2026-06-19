@@ -1,10 +1,10 @@
 """Tests for worldoracle.diff."""
 import time
-import pytest
-from worldoracle.store import WorldOracleStore
+
+from worldoracle.diff import BeliefDiff, diff_belief_states
 from worldoracle.predicate import WorldPredicate
+from worldoracle.store import WorldOracleStore
 from worldoracle.temporal import TemporalBeliefStore
-from worldoracle.diff import BeliefChange, BeliefDiff, diff_belief_states
 
 
 def make_pred(subject="king", attribute="alive", value=True, confidence=0.9, ts=1.0):
