@@ -142,7 +142,9 @@ def run_server() -> None:
                     lines.append(
                         f"  CONFLICT {a.subject}.{a.attribute}: {a.value!r} vs {b.value!r}"
                     )
-                return [_mcp_types.TextContent(  # type: ignore[name-defined]type="text", text="\n".join(lines))]
+                return [_mcp_types.TextContent(  # type: ignore[name-defined]
+                    type="text", text="\n".join(lines)
+                )]
             return [
                 _mcp_types.TextContent(  # type: ignore[name-defined]
                     type="text", text=f"No contradictions found for {npc_id}."
@@ -161,11 +163,15 @@ def run_server() -> None:
                 store.save_repair(frame)
                 repairs.append(frame)
             if not repairs:
-                return [_mcp_types.TextContent(  # type: ignore[name-defined]type="text", text="No repairs needed.")]
+                return [_mcp_types.TextContent(  # type: ignore[name-defined]
+                    type="text", text="No repairs needed."
+                )]
             lines = [f"Generated {len(repairs)} repair frame(s):"]
             for r in repairs:
                 lines.append(f"  [{r.strategy}] resolved_value={r.resolved_value!r}: {r.reason}")
-            return [_mcp_types.TextContent(  # type: ignore[name-defined]type="text", text="\n".join(lines))]
+            return [_mcp_types.TextContent(  # type: ignore[name-defined]
+                type="text", text="\n".join(lines)
+            )]
 
         raise ValueError(f"Unknown tool: {name}")
 
