@@ -42,7 +42,6 @@ def run_server() -> None:
     """Start the MCP server on stdio."""
     _require_mcp()
     mcp_stdio = _mcp_stdio  # type: ignore[name-defined]
-    types = _mcp_types  # type: ignore[name-defined]
     server_cls = _Server  # type: ignore[name-defined]
 
     from worldoracle.predicate import (
@@ -56,10 +55,10 @@ def run_server() -> None:
     server = server_cls("worldoracle")
 
     @server.list_tools()
-    async def list_tools() -> list[types.Tool]:
+    async def list_tools() -> list[_mcp_types.Tool]:  # type: ignore[name-defined]
         """Expose worldoracle operations as MCP tools."""
         return [
-            types.Tool(
+            _mcp_types.Tool(  # type: ignore[name-defined]
                 name="add_predicate",
                 description="Add a belief predicate to an NPC's world model.",
                 inputSchema={
@@ -84,7 +83,7 @@ def run_server() -> None:
                     "required": ["npc_id", "subject", "attribute", "value"],
                 },
             ),
-            types.Tool(
+            _mcp_types.Tool(  # type: ignore[name-defined]
                 name="check_beliefs",
                 description="Detect contradictions in an NPC's belief state.",
                 inputSchema={
@@ -95,7 +94,7 @@ def run_server() -> None:
                     "required": ["npc_id"],
                 },
             ),
-            types.Tool(
+            _mcp_types.Tool(  # type: ignore[name-defined]
                 name="repair_contradictions",
                 description=(
                     "Generate repair frames for all contradictions in an NPC's belief state."
@@ -113,7 +112,7 @@ def run_server() -> None:
     @server.call_tool()
     async def call_tool(
         name: str, arguments: dict[str, Any]
-    ) -> list[types.TextContent]:
+    ) -> list[_mcp_types.TextContent]:  # type: ignore[name-defined]
         """Dispatch an MCP tool call."""
         if name == "add_predicate":
             pred = WorldPredicate(
@@ -126,7 +125,7 @@ def run_server() -> None:
             )
             store.save_predicate(arguments["npc_id"], pred)
             return [
-                types.TextContent(
+                _mcp_types.TextContent(  # type: ignore[name-defined]
                     type="text",
                     text=f"Added predicate {pred.id} to {arguments['npc_id']}",
                 )
@@ -143,9 +142,9 @@ def run_server() -> None:
                     lines.append(
                         f"  CONFLICT {a.subject}.{a.attribute}: {a.value!r} vs {b.value!r}"
                     )
-                return [types.TextContent(type="text", text="\n".join(lines))]
+                return [_mcp_types.TextContent(  # type: ignore[name-defined]type="text", text="\n".join(lines))]
             return [
-                types.TextContent(
+                _mcp_types.TextContent(  # type: ignore[name-defined]
                     type="text", text=f"No contradictions found for {npc_id}."
                 )
             ]
@@ -162,11 +161,11 @@ def run_server() -> None:
                 store.save_repair(frame)
                 repairs.append(frame)
             if not repairs:
-                return [types.TextContent(type="text", text="No repairs needed.")]
+                return [_mcp_types.TextContent(  # type: ignore[name-defined]type="text", text="No repairs needed.")]
             lines = [f"Generated {len(repairs)} repair frame(s):"]
             for r in repairs:
                 lines.append(f"  [{r.strategy}] resolved_value={r.resolved_value!r}: {r.reason}")
-            return [types.TextContent(type="text", text="\n".join(lines))]
+            return [_mcp_types.TextContent(  # type: ignore[name-defined]type="text", text="\n".join(lines))]
 
         raise ValueError(f"Unknown tool: {name}")
 
