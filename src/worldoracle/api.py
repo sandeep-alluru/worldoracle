@@ -11,9 +11,7 @@ try:
     from fastapi import FastAPI
     from pydantic import BaseModel
 except ImportError as exc:
-    raise ImportError(
-        "API server requires: pip install 'worldoracle[api]'"
-    ) from exc
+    raise ImportError("API server requires: pip install 'worldoracle[api]'") from exc
 
 from worldoracle.predicate import (
     BeliefRepairer,
@@ -159,9 +157,7 @@ async def get_repairs(npc_id: str) -> dict[str, object]:
     pred_ids = {p.id for p in state.predicates}
     all_repairs = _store.get_repairs()
     relevant = [
-        r
-        for r in all_repairs
-        if r.predicate_a_id in pred_ids or r.predicate_b_id in pred_ids
+        r for r in all_repairs if r.predicate_a_id in pred_ids or r.predicate_b_id in pred_ids
     ]
     return {
         "npc_id": npc_id,

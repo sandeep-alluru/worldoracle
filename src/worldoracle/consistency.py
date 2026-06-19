@@ -1,8 +1,10 @@
 """Full consistency check with optional auto-repair."""
+
 from __future__ import annotations
 
 from collections import defaultdict
 from dataclasses import dataclass
+from typing import Any
 
 from worldoracle.predicate import BeliefRepairer, ContradictionDetector
 from worldoracle.store import WorldOracleStore
@@ -14,10 +16,10 @@ class ConsistencyReport:
     contradictions_found: int
     contradictions_repaired: int
     unresolved: int
-    consistency_score: float   # 0-1, 1 = fully consistent
-    by_subject: dict[str, int]   # subject -> contradiction count
-    most_contested: list[str]    # subjects with most contradictions (top 5)
-    repair_summary: list[str]    # human-readable list of what was repaired
+    consistency_score: float  # 0-1, 1 = fully consistent
+    by_subject: dict[str, int]  # subject -> contradiction count
+    most_contested: list[str]  # subjects with most contradictions (top 5)
+    repair_summary: list[str]  # human-readable list of what was repaired
 
 
 def full_consistency_check(store: WorldOracleStore, auto_repair: bool = True) -> ConsistencyReport:
@@ -27,7 +29,7 @@ def full_consistency_check(store: WorldOracleStore, auto_repair: bool = True) ->
     repairer = BeliefRepairer()
 
     total_predicates = 0
-    all_contradictions: list[tuple] = []
+    all_contradictions: list[tuple[Any, Any]] = []
     by_subject: dict[str, int] = defaultdict(int)
 
     for npc_id in npc_ids:

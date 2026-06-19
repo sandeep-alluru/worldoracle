@@ -78,11 +78,7 @@ class BeliefState:
 
     def get(self, subject: str, attribute: str) -> list[WorldPredicate]:
         """Get predicates matching subject and attribute."""
-        return [
-            p
-            for p in self.predicates
-            if p.subject == subject and p.attribute == attribute
-        ]
+        return [p for p in self.predicates if p.subject == subject and p.attribute == attribute]
 
     def to_dict(self) -> dict[str, Any]:
         """Serialize to dict."""
@@ -97,9 +93,7 @@ class BeliefState:
 class ContradictionDetector:
     """Find contradictions in a BeliefState."""
 
-    def detect(
-        self, state: BeliefState
-    ) -> list[tuple[WorldPredicate, WorldPredicate]]:
+    def detect(self, state: BeliefState) -> list[tuple[WorldPredicate, WorldPredicate]]:
         """Return pairs of contradicting predicates (same subject+attribute, different values)."""
         pairs: list[tuple[WorldPredicate, WorldPredicate]] = []
         groups: dict[tuple[str, str], list[WorldPredicate]] = defaultdict(list)

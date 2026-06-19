@@ -1,7 +1,9 @@
 """Belief state diff between two points in time."""
+
 from __future__ import annotations
 
 from dataclasses import dataclass
+from typing import Any
 
 from worldoracle.store import WorldOracleStore
 
@@ -14,7 +16,7 @@ class BeliefChange:
     new_value: str | None
     old_confidence: float | None
     new_confidence: float | None
-    change_type: str   # "added", "removed", "value_changed", "confidence_changed"
+    change_type: str  # "added", "removed", "value_changed", "confidence_changed"
 
 
 @dataclass
@@ -47,7 +49,7 @@ def diff_belief_states(
     # Get latest belief for each (subject, attribute) before or at timestamp.
     # We first find the most-recent snapshot taken at or before `ts`, then
     # return only the beliefs that were recorded in that snapshot.
-    def get_beliefs_at(ts):
+    def get_beliefs_at(ts: float) -> dict[tuple[str, str], tuple[Any, Any]]:
         snap_row = conn.execute(
             "SELECT snapshot_id FROM snapshot_registry WHERE taken_at <= ? "
             "ORDER BY taken_at DESC LIMIT 1",
@@ -62,7 +64,7 @@ def diff_belief_states(
                 FROM belief_snapshots
                 WHERE snapshot_id=? AND subject=?
             """
-            params: tuple = (snap_id, subject)
+            params: tuple[Any, ...] = (snap_id, subject)
         else:
             sql = """
                 SELECT subject, attribute, value, confidence
@@ -80,7 +82,7 @@ def diff_belief_states(
     changes = []
     stable = 0
 
-    for (subj, attr) in all_keys:
+    for subj, attr in all_keys:
         in_before = (subj, attr) in before_beliefs
         in_after = (subj, attr) in after_beliefs
 

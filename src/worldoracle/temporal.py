@@ -1,4 +1,5 @@
 """Temporal belief tracking — snapshots and history."""
+
 from __future__ import annotations
 
 import json
@@ -12,7 +13,7 @@ from worldoracle.store import WorldOracleStore
 class BeliefSnapshot:
     timestamp: float
     subject: str
-    predicate: str   # this is the attribute field
+    predicate: str  # this is the attribute field
     value: str
     confidence: float
     source: str
@@ -52,9 +53,7 @@ class TemporalBeliefStore:
         Raises RuntimeError if the database fails to assign a row ID.
         """
         now = time.time()
-        cur = self._conn.execute(
-            "INSERT INTO snapshot_registry (taken_at) VALUES (?)", (now,)
-        )
+        cur = self._conn.execute("INSERT INTO snapshot_registry (taken_at) VALUES (?)", (now,))
         snap_id = cur.lastrowid
         if snap_id is None:
             raise RuntimeError("Failed to insert snapshot registry row: no rowid returned")
@@ -65,8 +64,16 @@ class TemporalBeliefStore:
                 """INSERT INTO belief_snapshots
                    (snapshot_id, snapshot_ts, npc_id, subject, attribute, value, confidence, source)
                    VALUES (?,?,?,?,?,?,?,?)""",
-                (snap_id, now, row["npc_id"], row["subject"], row["attribute"],
-                 row["value"], row["confidence"], row["source"]),
+                (
+                    snap_id,
+                    now,
+                    row["npc_id"],
+                    row["subject"],
+                    row["attribute"],
+                    row["value"],
+                    row["confidence"],
+                    row["source"],
+                ),
             )
         self._conn.commit()
         return snap_id
@@ -75,7 +82,7 @@ class TemporalBeliefStore:
     def _deserialize_value(v: str) -> str:
         """Deserialize a stored value, handling JSON-encoded strings."""
         try:
-            return json.loads(v)  # type: ignore[return-value]
+            return str(json.loads(v))
         except (json.JSONDecodeError, ValueError):
             return v
 
@@ -110,14 +117,16 @@ class TemporalBeliefStore:
         ).fetchall()
         result = []
         for row in rows:
-            result.append(BeliefSnapshot(
-                timestamp=row["snapshot_ts"],
-                subject=row["subject"],
-                predicate=row["attribute"],
-                value=self._deserialize_value(row["value"]),
-                confidence=row["confidence"],
-                source=row["source"],
-            ))
+            result.append(
+                BeliefSnapshot(
+                    timestamp=row["snapshot_ts"],
+                    subject=row["subject"],
+                    predicate=row["attribute"],
+                    value=self._deserialize_value(row["value"]),
+                    confidence=row["confidence"],
+                    source=row["source"],
+                )
+            )
         return result
 
     def belief_drift(self, subject: str, predicate: str) -> float:

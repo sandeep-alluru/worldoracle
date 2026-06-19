@@ -32,9 +32,7 @@ def print_beliefs(state: BeliefState, console: Console | None = None) -> None:
     con.print(table)
 
 
-def print_repairs(
-    repairs: list[RepairFrame], console: Console | None = None
-) -> None:
+def print_repairs(repairs: list[RepairFrame], console: Console | None = None) -> None:
     """Print a list of repair frames as a rich table, or a 'no repairs' message."""
     con = console or _console
     if not repairs:
@@ -50,9 +48,7 @@ def print_repairs(
     con.print(table)
 
 
-def to_json(
-    state: BeliefState, repairs: list[RepairFrame] | None = None
-) -> str:
+def to_json(state: BeliefState, repairs: list[RepairFrame] | None = None) -> str:
     """Serialize a BeliefState (and optional repairs) to JSON."""
     data = state.to_dict()
     if repairs is not None:

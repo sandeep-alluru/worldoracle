@@ -91,9 +91,7 @@ class WorldOracleStore:
 
     def list_npc_ids(self) -> list[str]:
         """Return all distinct NPC IDs in the store."""
-        rows = self._conn.execute(
-            "SELECT DISTINCT npc_id FROM predicates"
-        ).fetchall()
+        rows = self._conn.execute("SELECT DISTINCT npc_id FROM predicates").fetchall()
         return [r[0] for r in rows]
 
     # ── Repairs ───────────────────────────────────────────────────────────────
