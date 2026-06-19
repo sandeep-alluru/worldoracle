@@ -52,11 +52,11 @@ flowchart LR
 | SQLite persistence (`WorldOracleStore`) | ✅ |
 | Contradiction detection | ✅ |
 | Belief repair (3 strategies) | ✅ |
-| Rich CLI (5 subcommands) | ✅ |
+| Rich CLI (7 subcommands) | ✅ |
 | FastAPI REST server | ✅ |
 | MCP server for Claude Desktop | ✅ |
 | OpenAI function-calling tools | ✅ |
-| 67 tests, >98% coverage | ✅ |
+| 93 tests, >98% coverage | ✅ |
 | Fully typed (py.typed) | ✅ |
 
 ---
@@ -80,10 +80,11 @@ detector = ContradictionDetector()
 pairs = detector.detect(state)
 print(f"Found {len(pairs)} contradiction(s)")
 
-# Repair
+# Repair — strategies are applied automatically in priority order:
+# prefer_newer → prefer_higher_confidence → prefer_observation
 repairer = BeliefRepairer()
 for a, b in pairs:
-    frame = repairer.repair(a, b)
+    frame = repairer.repair(a, b)  # repair(pred_a, pred_b) → RepairFrame
     print(f"Resolved: {frame.resolved_value!r} ({frame.strategy})")
 ```
 
@@ -101,6 +102,8 @@ worldoracle [--db PATH] COMMAND [ARGS]
 | `check NPC_ID` | Detect contradictions |
 | `repair NPC_ID` | Generate repair frames for all contradictions |
 | `beliefs NPC_ID` | List all beliefs for an NPC |
+| `consistency` | Run full consistency check across all NPCs |
+| `diff NPC_ID TIMESTAMP_A TIMESTAMP_B` | Diff belief state at two points in time |
 | `status` | Show database stats |
 
 ```bash
@@ -116,6 +119,19 @@ worldoracle check guard-1
 # Repair
 worldoracle repair guard-1
 ```
+
+---
+
+## REST Server
+
+Install the API extra and start the server:
+
+```bash
+pip install 'worldoracle[api]'
+uvicorn worldoracle.api:app --reload
+```
+
+The OpenAPI docs are available at `http://localhost:8000/docs`. See [openapi.yaml](openapi.yaml) for the full schema.
 
 ---
 

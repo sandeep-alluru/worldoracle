@@ -70,7 +70,9 @@ class BeliefState:
         self.id = hashlib.sha256(payload.encode()).hexdigest()[:16]
 
     def add(self, pred: WorldPredicate) -> None:
-        """Add a predicate and recompute ID."""
+        """Add a predicate and recompute ID. Skips duplicates by content ID."""
+        if any(p.id == pred.id for p in self.predicates):
+            return
         self.predicates.append(pred)
         self._recompute_id()
 
