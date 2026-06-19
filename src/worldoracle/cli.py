@@ -124,5 +124,44 @@ def status(ctx: click.Context) -> None:
     store.close()
 
 
+@main.command("consistency")
+@click.option("--repair", is_flag=True, default=False, help="Auto-repair contradictions")
+@click.pass_context
+def consistency_cmd(ctx: click.Context, repair: bool) -> None:
+    """Run full consistency check across all NPCs."""
+    store = WorldOracleStore(ctx.obj["db"])
+    from worldoracle.consistency import full_consistency_check
+    report = full_consistency_check(store, auto_repair=repair)
+    click.echo(f"Total predicates: {report.total_predicates}")
+    click.echo(f"Contradictions found: {report.contradictions_found}")
+    click.echo(f"Repaired: {report.contradictions_repaired}")
+    click.echo(f"Unresolved: {report.unresolved}")
+    click.echo(f"Consistency score: {report.consistency_score:.2f}")
+    if report.most_contested:
+        click.echo(f"Most contested subjects: {', '.join(report.most_contested)}")
+    for line in report.repair_summary:
+        click.echo(f"  {line}")
+    store.close()
+
+
+@main.command("diff")
+@click.option("--before", "before_ts", type=float, required=True, help="Before timestamp")
+@click.option("--after", "after_ts", type=float, required=True, help="After timestamp")
+@click.option("--subject", default=None, help="Filter by subject")
+@click.pass_context
+def diff_cmd(ctx: click.Context, before_ts: float, after_ts: float, subject: str | None) -> None:
+    """Diff belief state at two points in time."""
+    store = WorldOracleStore(ctx.obj["db"])
+    from worldoracle.diff import diff_belief_states
+    result = diff_belief_states(store, before_ts, after_ts, subject)
+    click.echo(result.summary)
+    for change in result.changes:
+        click.echo(
+            f"  [{change.change_type}] {change.subject}.{change.predicate}: "
+            f"{change.old_value!r} -> {change.new_value!r}"
+        )
+    store.close()
+
+
 if __name__ == "__main__":
     main()

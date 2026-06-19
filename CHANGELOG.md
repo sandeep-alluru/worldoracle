@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- `TemporalBeliefStore` — snapshot-based belief history with time-travel queries
+- `BeliefSnapshot` dataclass for point-in-time belief records
+- `belief_drift()` — measure confidence volatility over time (0=stable, 1=volatile)
+- `diff_belief_states()` — compare belief states at two timestamps, classifying each change
+- `BeliefChange` and `BeliefDiff` dataclasses with added/removed/modified/stable counts
+- `full_consistency_check()` — cross-NPC contradiction scan with optional auto-repair
+- `ConsistencyReport` with consistency_score, by_subject breakdown, most_contested subjects
+- CLI: `worldoracle consistency --repair` and `worldoracle diff --before T1 --after T2` commands
+
 ## [0.1.0] - 2026-06-18
 
 ### Added
