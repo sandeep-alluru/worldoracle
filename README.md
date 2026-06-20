@@ -219,6 +219,12 @@ See how teams are using worldoracle in production:
 - [Eliminating Immersion-Breaking NPC Contradictions in a Narrative Game](docs/case-studies/gaming-npc-world-consistency.md) — Narrative Forge eliminates NPC belief contradictions across 300 NPCs with a 12ms consistency check
 - [Automated Contradiction Resolution Across 50+ Data Sources](docs/case-studies/enterprise-multi-source-factbase.md) — Meridian Intelligence reduces manual reconciliation from 4 hours to 0 per report
 
+---
+
+## Stay Updated
+
+Subscribe to [**The Silence Layer**](https://newsletter.salluru.dev) — weekly dispatches on production AI infrastructure, new releases, and the failure modes that production AI systems don't surface until it's too late.
+
 ## Star History
 
 [![Star History Chart](https://api.star-history.com/svg?repos=sandeep-alluru/worldoracle&type=Date)](https://star-history.com/#sandeep-alluru/worldoracle&Date)
