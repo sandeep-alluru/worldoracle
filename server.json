@@ -1,0 +1,22 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.sandeep-alluru/worldoracle",
+  "title": "WorldOracle",
+  "description": "NPC contradiction detector and belief repair for game worlds",
+  "version": "0.1.1",
+  "websiteUrl": "https://github.com/sandeep-alluru/worldoracle",
+  "repository": {
+    "url": "https://github.com/sandeep-alluru/worldoracle",
+    "source": "github"
+  },
+  "packages": [
+    {
+      "registryType": "pypi",
+      "identifier": "worldoracle",
+      "version": "0.1.1",
+      "transport": {
+        "type": "stdio"
+      }
+    }
+  ]
+}

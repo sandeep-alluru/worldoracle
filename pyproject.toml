@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "worldoracle"
-version = "0.1.0"
+version = "0.1.1"
 description = "NPC contradiction detector and belief repair for game worlds"
 readme = "README.md"
 license = { file = "LICENSE" }
