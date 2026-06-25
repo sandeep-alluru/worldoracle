@@ -75,8 +75,8 @@ def test_default_strategy_keeps_pred_a(repairer: BeliefRepairer) -> None:
 
 def test_repair_frame_has_correct_strategy_field(repairer: BeliefRepairer) -> None:
     """Returned RepairFrame must have a non-empty strategy field."""
-    a = WorldPredicate(subject="king", attribute="alive", value=True)
-    b = WorldPredicate(subject="king", attribute="alive", value=False)
+    a = WorldPredicate(subject="king", attribute="alive", value=True, timestamp=10.0)
+    b = WorldPredicate(subject="king", attribute="alive", value=False, timestamp=20.0)
     frame = repairer.repair(a, b)
     assert isinstance(frame, RepairFrame)
     assert frame.strategy in {"prefer_newer", "prefer_higher_confidence", "prefer_observation"}

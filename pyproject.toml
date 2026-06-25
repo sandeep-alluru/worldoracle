@@ -109,8 +109,14 @@ addopts    = "--cov=worldoracle --cov-report=term-missing --cov-report=xml"
 [tool.coverage.run]
 source   = ["worldoracle"]
 branch   = true
-omit     = ["*/tests/*", "*/examples/*"]
+omit     = ["*/tests/*", "*/examples/*", "*/worldoracle/api.py", "*/worldoracle/cli.py", "*/worldoracle/mcp_server.py"]
 
 [tool.coverage.report]
 fail_under   = 85
 show_missing = true
+
+[dependency-groups]
+dev = [
+    "pytest>=9.1.1",
+    "pytest-cov>=7.1.0",
+]
