@@ -141,10 +141,17 @@ class RepairFrame:
 
 
 class BeliefRepairer:
-    """Generate RepairFrames for contradictions."""
+    """Generate RepairFrames for contradictions.
+
+    Strategy priority order (applied in sequence, first match wins):
+      1. prefer_newer            — higher timestamp wins
+      2. prefer_higher_confidence — higher confidence wins (when timestamps tied)
+      3. prefer_observation      — source == 'observation' wins over hearsay
+      4. default                 — no tiebreaker; pred_a kept, reason logged
+    """
 
     def repair(self, pred_a: WorldPredicate, pred_b: WorldPredicate) -> RepairFrame:
-        """Apply repair strategies in priority order."""
+        """Apply repair strategies in priority order and return a RepairFrame."""
         now = time.time()
         # 1. prefer_newer
         if pred_a.timestamp != pred_b.timestamp:
@@ -179,12 +186,12 @@ class BeliefRepairer:
                 reason="Preferring direct observation over hearsay",
                 timestamp=now,
             )
-        # Default: keep pred_a
+        # Default: no distinguishing strategy — keep pred_a, log reason
         return RepairFrame(
             predicate_a_id=pred_a.id,
             predicate_b_id=pred_b.id,
-            strategy="prefer_newer",
+            strategy="default",
             resolved_value=pred_a.value,
-            reason="No distinguishing strategy; defaulting to first predicate",
+            reason="No distinguishing strategy (tied timestamps and confidence, no observation source); defaulting to first predicate",
             timestamp=now,
         )
