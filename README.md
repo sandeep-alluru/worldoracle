@@ -10,17 +10,51 @@
 [![codecov](https://codecov.io/gh/sandeep-alluru/worldoracle/branch/main/graph/badge.svg)](https://codecov.io/gh/sandeep-alluru/worldoracle)
 [![Typed](https://img.shields.io/badge/mypy-typed-blue.svg)](https://mypy.readthedocs.io)
 
-**NPC contradiction detector and belief repair for game worlds.**
+**Contradiction detector and belief repair for multi-source fact states — game worlds, AI pipelines, and multi-tool agents.**
 
-[Quick Start](#quick-start) · [How It Works](#how-it-works) · [Features](#features) · [CLI Reference](#cli-reference) · [MCP](#mcp--claude-desktop) · [OpenAI Tools](#openai-tools) · [Alternatives](#alternatives)
+[Quick Start](#quick-start) · [How It Works](#how-it-works) · [Use Cases](#use-cases) · [Features](#features) · [CLI Reference](#cli-reference) · [MCP](#mcp--claude-desktop) · [OpenAI Tools](#openai-tools) · [Alternatives](#alternatives)
 
 ---
 
 ## Why
 
-Game NPCs frequently end up with contradictory world models: the blacksmith "knows" the king is both alive and dead, the guard believes the bridge is passable while the quest log says it collapsed. These inconsistencies break immersion and cause dialogue bugs.
+Any system that merges facts from multiple sources ends up with contradictions. The sources don't coordinate — they just answer independently and move on.
 
-**worldoracle** gives every NPC a typed belief store with automatic contradiction detection and principled repair strategies — so your world stays consistent even when multiple event sources update the same facts.
+**In game worlds:** The blacksmith "knows" the king is both alive and dead; the guard believes the bridge is passable while the quest log says it collapsed. These inconsistencies break immersion and cause dialogue bugs.
+
+**In AI pipelines:** A web-search tool returns a price of $899. A RAG knowledge base (synced 14 days ago) returns $749. A reasoning LLM infers $820. Without reconciliation, the agent synthesises an average that is wrong for every tier — and 44% of multi-tool pipelines hit this pattern when the KB is more than 7 days stale.
+
+**worldoracle** gives any system a typed belief store with automatic contradiction detection and principled repair strategies — so your world stays consistent even when multiple independent sources update the same facts.
+
+---
+
+## Use Cases
+
+### Multi-tool AI agents
+
+When you fan out a question to web-search + RAG + LLM and combine the results, conflicting answers are the rule, not the exception. worldoracle detects which facts contradict, applies a priority strategy (`prefer_newer`, `prefer_higher_confidence`, `prefer_observation`), and surfaces a single resolved answer.
+
+```python
+# Three AI tools answered the same question differently
+state = BeliefState(npc_id="support-pipeline-run-001")
+state.add(WorldPredicate("enterprise-tier", "monthly_price_usd", 899,
+                         source="web-search", confidence=0.95, timestamp=now))
+state.add(WorldPredicate("enterprise-tier", "monthly_price_usd", 749,
+                         source="knowledge-base", confidence=0.75, timestamp=14_days_ago))
+
+detector = ContradictionDetector()
+pairs = detector.detect(state)  # [(web-search:899, knowledge-base:749)]
+
+repairer = BeliefRepairer()
+frame = repairer.repair(*pairs[0])
+print(frame.resolved_value)   # 899  (web-search wins — newer + higher confidence)
+```
+
+See [`examples/ai_tool_contradiction_detector.py`](examples/ai_tool_contradiction_detector.py) for a full walkthrough.
+
+### Game NPCs
+
+Game NPCs frequently end up with contradictory world models across event systems, quest triggers, and dialogue trees. worldoracle gives every NPC a content-addressed belief store — consistent even when multiple systems update the same facts.
 
 ---
 
@@ -201,6 +235,8 @@ See [docs/openai.md](docs/openai.md) for integration examples.
 | Event sourcing logs | Append-only, no repair | Built-in contradiction detection + repair |
 | Prolog / logic engines | Heavyweight runtime | Zero-dep Python, SQLite storage |
 | LLM world models | Probabilistic, opaque | Deterministic, inspectable, fast |
+| Ad-hoc LLM merging | "Synthesise all answers" | Explicit winner selection + audit trail |
+| Tool result averaging | Ignores source reliability | Confidence + recency weighting |
 
 ---
 
@@ -228,3 +264,5 @@ Subscribe to [**The Silence Layer**](https://newsletter.salluru.dev) — weekly 
 ## Star History
 
 [![Star History Chart](https://api.star-history.com/svg?repos=sandeep-alluru/worldoracle&type=Date)](https://star-history.com/#sandeep-alluru/worldoracle&Date)
+
+<!-- mcp-name: io.github.sandeep-alluru/worldoracle -->
