@@ -1,4 +1,5 @@
 """Tests for worldoracle.temporal."""
+
 import time
 
 from worldoracle.predicate import WorldPredicate
@@ -7,8 +8,14 @@ from worldoracle.temporal import BeliefSnapshot, TemporalBeliefStore
 
 
 def make_pred(subject="king", attribute="alive", value=True, confidence=0.9, ts=1.0):
-    return WorldPredicate(subject=subject, attribute=attribute, value=value,
-                          source="obs", confidence=confidence, timestamp=ts)
+    return WorldPredicate(
+        subject=subject,
+        attribute=attribute,
+        value=value,
+        source="obs",
+        confidence=confidence,
+        timestamp=ts,
+    )
 
 
 def test_record_snapshot_returns_id():
@@ -75,8 +82,9 @@ def test_belief_drift_volatile():
     ts = TemporalBeliefStore(store)
     ts.record_snapshot()
     # Update predicate with different confidence
-    pred2 = WorldPredicate(subject="king", attribute="alive", value=True,
-                           source="obs", confidence=0.9, timestamp=2.0)
+    pred2 = WorldPredicate(
+        subject="king", attribute="alive", value=True, source="obs", confidence=0.9, timestamp=2.0
+    )
     store.save_predicate("npc1", pred2)
     ts.record_snapshot()
     drift = ts.belief_drift("king", "alive")

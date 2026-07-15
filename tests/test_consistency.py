@@ -1,12 +1,19 @@
 """Tests for worldoracle.consistency."""
+
 from worldoracle.consistency import ConsistencyReport, full_consistency_check
 from worldoracle.predicate import WorldPredicate
 from worldoracle.store import WorldOracleStore
 
 
 def make_pred(subject, attribute, value, confidence=1.0, ts=1.0, source="obs"):
-    return WorldPredicate(subject=subject, attribute=attribute, value=value,
-                          source=source, confidence=confidence, timestamp=ts)
+    return WorldPredicate(
+        subject=subject,
+        attribute=attribute,
+        value=value,
+        source=source,
+        confidence=confidence,
+        timestamp=ts,
+    )
 
 
 def test_consistency_empty_store():

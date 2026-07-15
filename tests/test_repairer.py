@@ -47,12 +47,20 @@ def test_prefer_higher_confidence(repairer: BeliefRepairer) -> None:
 def test_prefer_observation(repairer: BeliefRepairer) -> None:
     """prefer_observation should select the predicate with source='observation'."""
     hearsay = WorldPredicate(
-        subject="king", attribute="alive", value=True,
-        source="rumor", confidence=1.0, timestamp=0.0,
+        subject="king",
+        attribute="alive",
+        value=True,
+        source="rumor",
+        confidence=1.0,
+        timestamp=0.0,
     )
     observed = WorldPredicate(
-        subject="king", attribute="alive", value=False,
-        source="observation", confidence=1.0, timestamp=0.0,
+        subject="king",
+        attribute="alive",
+        value=False,
+        source="observation",
+        confidence=1.0,
+        timestamp=0.0,
     )
     frame = repairer.repair(hearsay, observed)
     assert frame.strategy == "prefer_observation"
@@ -62,12 +70,20 @@ def test_prefer_observation(repairer: BeliefRepairer) -> None:
 def test_default_strategy_keeps_pred_a(repairer: BeliefRepairer) -> None:
     """When no strategy differentiates, default to pred_a's value."""
     a = WorldPredicate(
-        subject="king", attribute="alive", value=True,
-        source="rumor", confidence=1.0, timestamp=0.0,
+        subject="king",
+        attribute="alive",
+        value=True,
+        source="rumor",
+        confidence=1.0,
+        timestamp=0.0,
     )
     b = WorldPredicate(
-        subject="king", attribute="alive", value=False,
-        source="rumor", confidence=1.0, timestamp=0.0,
+        subject="king",
+        attribute="alive",
+        value=False,
+        source="rumor",
+        confidence=1.0,
+        timestamp=0.0,
     )
     frame = repairer.repair(a, b)
     assert frame.resolved_value == True  # noqa: E712
@@ -105,7 +121,12 @@ def test_repair_frame_to_dict_keys() -> None:
     )
     d = frame.to_dict()
     expected = {
-        "id", "predicate_a_id", "predicate_b_id",
-        "strategy", "resolved_value", "reason", "timestamp",
+        "id",
+        "predicate_a_id",
+        "predicate_b_id",
+        "strategy",
+        "resolved_value",
+        "reason",
+        "timestamp",
     }
     assert set(d.keys()) == expected

@@ -84,15 +84,21 @@ def test_get_repairs(client) -> None:  # type: ignore[no-untyped-def]
     client.post(
         "/predicate",
         json={
-            "npc_id": "guard-1", "subject": "king", "attribute": "alive",
-            "value": "True", "confidence": 0.5,
+            "npc_id": "guard-1",
+            "subject": "king",
+            "attribute": "alive",
+            "value": "True",
+            "confidence": 0.5,
         },
     )
     client.post(
         "/predicate",
         json={
-            "npc_id": "guard-1", "subject": "king", "attribute": "alive",
-            "value": "False", "confidence": 0.9,
+            "npc_id": "guard-1",
+            "subject": "king",
+            "attribute": "alive",
+            "value": "False",
+            "confidence": 0.9,
         },
     )
     # Trigger repair

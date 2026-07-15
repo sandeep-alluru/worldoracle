@@ -1,4 +1,5 @@
 """Tests for worldoracle.diff."""
+
 import time
 
 from worldoracle.diff import BeliefDiff, diff_belief_states
@@ -8,8 +9,14 @@ from worldoracle.temporal import TemporalBeliefStore
 
 
 def make_pred(subject="king", attribute="alive", value=True, confidence=0.9, ts=1.0):
-    return WorldPredicate(subject=subject, attribute=attribute, value=value,
-                          source="obs", confidence=confidence, timestamp=ts)
+    return WorldPredicate(
+        subject=subject,
+        attribute=attribute,
+        value=value,
+        source="obs",
+        confidence=confidence,
+        timestamp=ts,
+    )
 
 
 def test_diff_no_snapshot_data():
@@ -75,20 +82,16 @@ def test_diff_with_subject_filter():
 def test_diff_removed():
     """Belief present before but absent after -> removed."""
     store = WorldOracleStore(":memory:")
-    ts = TemporalBeliefStore(store)
+    TemporalBeliefStore(store)
     # Manually insert snapshot rows at controlled timestamps
     conn = store._conn
-    conn.execute(
-        "INSERT INTO snapshot_registry (taken_at) VALUES (?)", (1000.0,)
-    )
+    conn.execute("INSERT INTO snapshot_registry (taken_at) VALUES (?)", (1000.0,))
     conn.execute(
         """INSERT INTO belief_snapshots
            (snapshot_id, snapshot_ts, npc_id, subject, attribute, value, confidence, source)
            VALUES (1, 1000.0, 'npc1', 'king', 'alive', 'true', 0.9, 'obs')"""
     )
-    conn.execute(
-        "INSERT INTO snapshot_registry (taken_at) VALUES (?)", (2000.0,)
-    )
+    conn.execute("INSERT INTO snapshot_registry (taken_at) VALUES (?)", (2000.0,))
     # No rows for snapshot 2 — belief was removed
     conn.commit()
     result = diff_belief_states(store, 1500.0, 2500.0)
@@ -99,19 +102,15 @@ def test_diff_removed():
 def test_diff_value_changed():
     """Belief value changes between snapshots -> value_changed."""
     store = WorldOracleStore(":memory:")
-    ts = TemporalBeliefStore(store)
+    TemporalBeliefStore(store)
     conn = store._conn
-    conn.execute(
-        "INSERT INTO snapshot_registry (taken_at) VALUES (?)", (1000.0,)
-    )
+    conn.execute("INSERT INTO snapshot_registry (taken_at) VALUES (?)", (1000.0,))
     conn.execute(
         """INSERT INTO belief_snapshots
            (snapshot_id, snapshot_ts, npc_id, subject, attribute, value, confidence, source)
            VALUES (1, 1000.0, 'npc1', 'king', 'alive', '"old"', 0.9, 'obs')"""
     )
-    conn.execute(
-        "INSERT INTO snapshot_registry (taken_at) VALUES (?)", (2000.0,)
-    )
+    conn.execute("INSERT INTO snapshot_registry (taken_at) VALUES (?)", (2000.0,))
     conn.execute(
         """INSERT INTO belief_snapshots
            (snapshot_id, snapshot_ts, npc_id, subject, attribute, value, confidence, source)
@@ -126,19 +125,15 @@ def test_diff_value_changed():
 def test_diff_confidence_changed():
     """Same value, different confidence -> confidence_changed."""
     store = WorldOracleStore(":memory:")
-    ts = TemporalBeliefStore(store)
+    TemporalBeliefStore(store)
     conn = store._conn
-    conn.execute(
-        "INSERT INTO snapshot_registry (taken_at) VALUES (?)", (1000.0,)
-    )
+    conn.execute("INSERT INTO snapshot_registry (taken_at) VALUES (?)", (1000.0,))
     conn.execute(
         """INSERT INTO belief_snapshots
            (snapshot_id, snapshot_ts, npc_id, subject, attribute, value, confidence, source)
            VALUES (1, 1000.0, 'npc1', 'king', 'alive', '"alive"', 0.5, 'obs')"""
     )
-    conn.execute(
-        "INSERT INTO snapshot_registry (taken_at) VALUES (?)", (2000.0,)
-    )
+    conn.execute("INSERT INTO snapshot_registry (taken_at) VALUES (?)", (2000.0,))
     conn.execute(
         """INSERT INTO belief_snapshots
            (snapshot_id, snapshot_ts, npc_id, subject, attribute, value, confidence, source)

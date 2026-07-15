@@ -59,12 +59,34 @@ def test_add_then_check_finds_contradiction(runner: CliRunner, cli_db: str) -> N
 
 def test_repair_on_contradicting_npc(runner: CliRunner, cli_db: str) -> None:
     """worldoracle repair should generate repair frames for contradictions."""
-    runner.invoke(main, [
-        "--db", cli_db, "add", "guard-1", "king", "alive", "True", "--confidence", "0.5",
-    ])
-    runner.invoke(main, [
-        "--db", cli_db, "add", "guard-1", "king", "alive", "False", "--confidence", "0.9",
-    ])
+    runner.invoke(
+        main,
+        [
+            "--db",
+            cli_db,
+            "add",
+            "guard-1",
+            "king",
+            "alive",
+            "True",
+            "--confidence",
+            "0.5",
+        ],
+    )
+    runner.invoke(
+        main,
+        [
+            "--db",
+            cli_db,
+            "add",
+            "guard-1",
+            "king",
+            "alive",
+            "False",
+            "--confidence",
+            "0.9",
+        ],
+    )
     result = runner.invoke(main, ["--db", cli_db, "repair", "guard-1"])
     assert result.exit_code == 0
 

@@ -192,6 +192,9 @@ class BeliefRepairer:
             predicate_b_id=pred_b.id,
             strategy="default",
             resolved_value=pred_a.value,
-            reason="No distinguishing strategy (tied timestamps and confidence, no observation source); defaulting to first predicate",
+            reason=(
+                "No distinguishing strategy (tied timestamps and confidence, "
+                "no observation source); defaulting to first predicate"
+            ),
             timestamp=now,
         )

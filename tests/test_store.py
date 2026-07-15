@@ -21,8 +21,12 @@ def test_save_and_retrieve_predicate(tmp_db: str) -> None:
     """save_predicate + get_belief_state should round-trip a predicate."""
     store = WorldOracleStore(tmp_db)
     pred = WorldPredicate(
-        subject="king", attribute="alive", value=True,
-        source="observation", confidence=0.9, timestamp=100.0,
+        subject="king",
+        attribute="alive",
+        value=True,
+        source="observation",
+        confidence=0.9,
+        timestamp=100.0,
     )
     store.save_predicate("guard-1", pred)
     state = store.get_belief_state("guard-1")
@@ -99,12 +103,20 @@ def test_get_repairs_filtered_by_predicate_id(tmp_db: str) -> None:
     """get_repairs(predicate_a_id=...) should filter correctly."""
     store = WorldOracleStore(tmp_db)
     r1 = RepairFrame(
-        predicate_a_id="aaa", predicate_b_id="bbb",
-        strategy="prefer_newer", resolved_value=True, reason="r1", timestamp=0.0,
+        predicate_a_id="aaa",
+        predicate_b_id="bbb",
+        strategy="prefer_newer",
+        resolved_value=True,
+        reason="r1",
+        timestamp=0.0,
     )
     r2 = RepairFrame(
-        predicate_a_id="ccc", predicate_b_id="ddd",
-        strategy="prefer_newer", resolved_value=False, reason="r2", timestamp=0.0,
+        predicate_a_id="ccc",
+        predicate_b_id="ddd",
+        strategy="prefer_newer",
+        resolved_value=False,
+        reason="r2",
+        timestamp=0.0,
     )
     store.save_repair(r1)
     store.save_repair(r2)
