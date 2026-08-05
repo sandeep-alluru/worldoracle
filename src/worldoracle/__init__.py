@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from importlib.metadata import version as _version
 
+from worldoracle.closed_loop import GateOutcome, assert_beliefs_clean, gate_beliefs
 from worldoracle.consistency import ConsistencyReport, full_consistency_check
 from worldoracle.diff import BeliefChange, BeliefDiff, diff_belief_states
 from worldoracle.predicate import (
@@ -27,12 +28,15 @@ __all__ = [
     "BeliefState",
     "ConsistencyReport",
     "ContradictionDetector",
+    "GateOutcome",
     "RepairFrame",
     "TemporalBeliefStore",
     "WorldOracleStore",
     "WorldPredicate",
+    "assert_beliefs_clean",
     "diff_belief_states",
     "full_consistency_check",
+    "gate_beliefs",
     "print_beliefs",
     "print_repairs",
     "to_json",
