@@ -10,6 +10,14 @@ from worldoracle.closed_loop import (
     assert_beliefs_clean,
     gate_beliefs,
 )
+from worldoracle.collective import (
+    AgentVote,
+    ConsensusCertificate,
+    assert_collective_consensus_ok,
+    certify_consensus,
+    estimate_deadline,
+    gate_collective_consensus,
+)
 from worldoracle.consistency import ConsistencyReport, full_consistency_check
 from worldoracle.diff import BeliefChange, BeliefDiff, diff_belief_states
 from worldoracle.predicate import (
@@ -26,12 +34,14 @@ from worldoracle.temporal import BeliefSnapshot, TemporalBeliefStore
 __version__ = _version("worldoracle")
 
 __all__ = [
+    "AgentVote",
     "BeliefChange",
     "BeliefDiff",
     "BeliefRepairer",
     "BeliefSnapshot",
     "BeliefState",
     "ClosedLoopError",
+    "ConsensusCertificate",
     "ConsistencyReport",
     "ContradictionDetector",
     "GateOutcome",
@@ -40,9 +50,13 @@ __all__ = [
     "WorldOracleStore",
     "WorldPredicate",
     "assert_beliefs_clean",
+    "assert_collective_consensus_ok",
+    "certify_consensus",
     "diff_belief_states",
+    "estimate_deadline",
     "full_consistency_check",
     "gate_beliefs",
+    "gate_collective_consensus",
     "print_beliefs",
     "print_repairs",
     "to_json",
