@@ -16,6 +16,10 @@ from worldoracle.store import WorldOracleStore
 Mode = Literal["report", "auto_repair", "human_required"]
 
 
+class ClosedLoopError(RuntimeError):
+    """Raised when a worldoracle closed-loop gate refuses the world state."""
+
+
 @dataclass(frozen=True)
 class GateOutcome:
     ok: bool
@@ -138,5 +142,5 @@ def gate_beliefs(
 def assert_beliefs_clean(store: WorldOracleStore, *, mode: Mode = "human_required") -> GateOutcome:
     out = gate_beliefs(store, mode=mode)
     if not out.ok:
-        raise RuntimeError(f"{out.verdict}: {out.reason}")
+        raise ClosedLoopError(f"{out.verdict}: {out.reason}")
     return out
