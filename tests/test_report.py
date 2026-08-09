@@ -1,4 +1,4 @@
-"""Tests for worldoracle.report — print_beliefs, print_repairs, to_json, to_markdown."""
+"""Tests for worldoracle.report - print_beliefs, print_repairs, to_json, to_markdown."""
 
 from __future__ import annotations
 

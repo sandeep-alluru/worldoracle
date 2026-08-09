@@ -21,7 +21,6 @@ Run:
 from __future__ import annotations
 
 import time
-from collections import defaultdict
 
 from worldoracle.predicate import (
     BeliefRepairer,
@@ -31,7 +30,6 @@ from worldoracle.predicate import (
     WorldPredicate,
 )
 from worldoracle.store import WorldOracleStore
-
 
 BASE_TS = 1_750_500_000.0     # kick-off epoch
 
@@ -280,7 +278,7 @@ def main() -> None:
           f"{TEAM_B.replace('_United','')}")
     print(f"  Match ID: {MATCH_ID}")
     print(f"  Sources:  {TV_FEED}, {RADIO}, {OFFICIAL}")
-    print(f"  Engine:   worldoracle  |  Mode: Real-time belief repair")
+    print("  Engine:   worldoracle  |  Mode: Real-time belief repair")
     hr("═")
 
     store = WorldOracleStore(":memory:")
@@ -322,7 +320,7 @@ def main() -> None:
               f"[{frame.strategy}] via {winner.source}")
         print()
 
-    print(f"\n[3/3] Generating verified half-time state …")
+    print("\n[3/3] Generating verified half-time state …")
     hr()
 
     # Verified score: most recent Official_Stats score predicate
@@ -344,7 +342,7 @@ def main() -> None:
     ])
 
     print()
-    print(f"  VERIFIED HALF-TIME STATE:")
+    print("  VERIFIED HALF-TIME STATE:")
     print(f"  {TEAM_A.replace('_FC', '')} {verified_score} "
           f"{TEAM_B.replace('_United', '')}")
     print(f"  Contradictions auto-resolved:  {len(contradictions)} "

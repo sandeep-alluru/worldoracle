@@ -1,4 +1,4 @@
-"""Temporal belief tracking — snapshots and history."""
+"""Temporal belief tracking - snapshots and history."""
 
 from __future__ import annotations
 

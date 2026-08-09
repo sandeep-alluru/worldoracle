@@ -1,4 +1,4 @@
-"""worldoracle — NPC contradiction detector and belief repair for game worlds."""
+"""worldoracle - NPC contradiction detector and belief repair for game worlds."""
 
 from __future__ import annotations
 

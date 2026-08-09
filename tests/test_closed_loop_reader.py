@@ -1,4 +1,4 @@
-"""Closed-loop gate — empty store and legal human_required (farm cases)."""
+"""Closed-loop gate - empty store and legal human_required (farm cases)."""
 
 from worldoracle.closed_loop import assert_beliefs_clean, gate_beliefs
 from worldoracle.predicate import WorldPredicate

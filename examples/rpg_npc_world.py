@@ -19,7 +19,6 @@ Run:
 """
 from __future__ import annotations
 
-import time
 from collections import defaultdict
 
 from worldoracle.predicate import (
@@ -29,7 +28,6 @@ from worldoracle.predicate import (
     WorldPredicate,
 )
 from worldoracle.store import WorldOracleStore
-
 
 BASE_TS = 1_750_300_000.0    # "game time" epoch
 
@@ -262,7 +260,7 @@ def main() -> None:
     print()
     hr("═")
     print("  CHRONICLES OF AETHERMOOR — WORLD STATE AUDIT")
-    print(f"  System: NPC Belief Engine | Powered by: worldoracle")
+    print("  System: NPC Belief Engine | Powered by: worldoracle")
     hr("═")
 
     store = WorldOracleStore(":memory:")
@@ -346,7 +344,7 @@ def main() -> None:
         None,
     )
     if king_repair:
-        print(f"  AFTER repair:")
+        print("  AFTER repair:")
         print(f"    • King_Aldric.is_alive = {king_repair.resolved_value}")
         print(f"    • Strategy: {king_repair.strategy}")
         print(f"    • {king_repair.reason}")
@@ -365,15 +363,15 @@ def main() -> None:
         None,
     )
     if cap_repair:
-        print(f"  AFTER repair:")
+        print("  AFTER repair:")
         print(f"    • Capital_City.controlled_by = {cap_repair.resolved_value}")
         print(f"    • Strategy: {cap_repair.strategy}")
         print(f"    • {cap_repair.reason}")
 
     print()
     hr("═")
-    print(f"\n  Audit complete. World state is now consistent.")
-    print(f"  All NPC beliefs reconciled and stored. Game engine can proceed.")
+    print("\n  Audit complete. World state is now consistent.")
+    print("  All NPC beliefs reconciled and stored. Game engine can proceed.")
     print()
 
 

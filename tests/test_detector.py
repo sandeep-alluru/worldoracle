@@ -46,7 +46,7 @@ def test_multiple_contradictions_detected(detector: ContradictionDetector) -> No
 
 
 def test_different_subject_no_contradiction(detector: ContradictionDetector) -> None:
-    """Same attribute, different subjects — not a contradiction."""
+    """Same attribute, different subjects - not a contradiction."""
     state = _make_state()
     state.add(WorldPredicate(subject="king", attribute="alive", value=True))
     state.add(WorldPredicate(subject="queen", attribute="alive", value=False))
@@ -54,7 +54,7 @@ def test_different_subject_no_contradiction(detector: ContradictionDetector) -> 
 
 
 def test_different_attribute_no_contradiction(detector: ContradictionDetector) -> None:
-    """Same subject, different attributes — not a contradiction."""
+    """Same subject, different attributes - not a contradiction."""
     state = _make_state()
     state.add(WorldPredicate(subject="king", attribute="alive", value=True))
     state.add(WorldPredicate(subject="king", attribute="crowned", value=False))
@@ -62,7 +62,7 @@ def test_different_attribute_no_contradiction(detector: ContradictionDetector) -
 
 
 def test_same_value_no_contradiction(detector: ContradictionDetector) -> None:
-    """Same subject+attribute+value — not a contradiction."""
+    """Same subject+attribute+value - not a contradiction."""
     state = _make_state()
     state.add(WorldPredicate(subject="king", attribute="alive", value=True))
     state.add(WorldPredicate(subject="king", attribute="alive", value=True))

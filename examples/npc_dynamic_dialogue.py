@@ -51,7 +51,6 @@ from worldoracle.predicate import (
 )
 from worldoracle.store import WorldOracleStore
 
-
 BASE_TS = 1_750_600_000.0    # in-game epoch ("game time zero")
 
 
@@ -315,7 +314,7 @@ def main() -> None:
         print(f"  {npc_id:<22} {role:<18} {tier:<12} {len(state.predicates)}")
 
     # ── [2/3] NPC dialogue generation (world-state-grounded) ─────────────────
-    print(f"\n[2/3] Generating world-grounded dialogue for each NPC …")
+    print("\n[2/3] Generating world-grounded dialogue for each NPC …")
     print()
 
     for npc_id, state in npc_states.items():
@@ -332,8 +331,8 @@ def main() -> None:
         print(f"  Says:  {dialogue}")
 
     # ── [3/3] Contradiction demo — Innkeeper vs Spy on King Aldric's status ──
-    print(f"\n\n[3/3] Seeding belief contradiction — "
-          f"Innkeeper vs Spy on King_Aldric.status …")
+    print("\n\n[3/3] Seeding belief contradiction — "
+          "Innkeeper vs Spy on King_Aldric.status …")
     print()
 
     # Innkeeper heard an old rumor that the king is still alive (low conf, stale)
@@ -377,12 +376,12 @@ def main() -> None:
         store.save_repair(frame)
         repairs.append(frame)
 
-    for (pred_a, pred_b), frame in zip(contradictions, repairs):
+    for (pred_a, pred_b), frame in zip(contradictions, repairs, strict=False):
         winner = pred_a if frame.resolved_value == pred_a.value else pred_b
         loser = pred_b if frame.resolved_value == pred_a.value else pred_a
         print()
         hr()
-        print(f"  CONTRADICTION:  King_Aldric.status")
+        print("  CONTRADICTION:  King_Aldric.status")
         print(f"    [{pred_a.source:<20}]  "
               f"says '{pred_a.value}'  "
               f"(conf={pred_a.confidence:.2f}, "
@@ -400,10 +399,10 @@ def main() -> None:
 
     print()
     hr("═")
-    print(f"\n  Demo complete.")
+    print("\n  Demo complete.")
     print(f"  World events ingested:            {len(world_events)}")
     print(f"  NPC agents with grounded context: {len(NPCS)}")
-    print(f"  Dialogue mismatches:              0")
+    print("  Dialogue mismatches:              0")
     print(f"  Belief contradictions detected:   {len(contradictions)}")
     print(f"  Contradictions auto-repaired:     {len(repairs)}")
     print()

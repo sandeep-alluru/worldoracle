@@ -1,7 +1,7 @@
-"""Closed-loop gates for worldoracle — farm_memory LEGAL-NO-AUTOFIX / G-CONTRA.
+"""Closed-loop gates for worldoracle - farm_memory LEGAL-NO-AUTOFIX / G-CONTRA.
 
 Real-world cases (Qdrant):
-- LEGAL GATES ALWAYS STOP FOR HUMAN — NEVER AUTO-FIX: G-CONTRA, G-FOOTAGE-THEME, ...
+- LEGAL GATES ALWAYS STOP FOR HUMAN - NEVER AUTO-FIX: G-CONTRA, G-FOOTAGE-THEME, ...
 - check_contradictions ran BEFORE data existed (phase order) → false blocks
 """
 
@@ -54,15 +54,15 @@ def gate_beliefs(
     - report: detect only, ok if score==1
     - auto_repair: allow automatic repair (NOT for legal gates)
     - human_required: if any contradiction, FAIL and demand human
-      (default — matches farm rule LEGAL GATES NEVER AUTO-FIX)
+      (default - matches farm rule LEGAL GATES NEVER AUTO-FIX)
 
     Phase guard: empty store → FAIL_LOUD (do not run contradiction
-    checks before data exists — Foundry G-CONTRA ordering bug).
+    checks before data exists - Foundry G-CONTRA ordering bug).
     """
     npc_ids = store.list_npc_ids()
     if not npc_ids:
         return _fail_loud(
-            "empty belief store — refuse consistency check before data exists "
+            "empty belief store - refuse consistency check before data exists "
             "(Foundry: G-CONTRA ran before clips existed)"
         )
 
@@ -71,7 +71,7 @@ def gate_beliefs(
         total += len(store.get_belief_state(nid).predicates)
     if total < min_predicates:
         return _fail_loud(
-            f"only {total} predicates (<{min_predicates}) — phase too early for contradiction gate"
+            f"only {total} predicates (<{min_predicates}) - phase too early for contradiction gate"
         )
 
     if mode == "auto_repair":
@@ -94,7 +94,7 @@ def gate_beliefs(
         return GateOutcome(
             False,
             "FAIL",
-            f"{report.contradictions_found} contradictions — human review required "
+            f"{report.contradictions_found} contradictions - human review required "
             f"(LEGAL-NO-AUTOFIX); contested={report.most_contested[:3]}",
             1,
             report.consistency_score,

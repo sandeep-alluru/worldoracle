@@ -92,7 +92,7 @@ def test_diff_removed():
            VALUES (1, 1000.0, 'npc1', 'king', 'alive', 'true', 0.9, 'obs')"""
     )
     conn.execute("INSERT INTO snapshot_registry (taken_at) VALUES (?)", (2000.0,))
-    # No rows for snapshot 2 — belief was removed
+    # No rows for snapshot 2 - belief was removed
     conn.commit()
     result = diff_belief_states(store, 1500.0, 2500.0)
     assert result.removed >= 1

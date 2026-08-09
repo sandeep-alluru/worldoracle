@@ -35,7 +35,6 @@ from worldoracle import (
     to_json,
 )
 
-
 # ── Simulated tool outputs (as would arrive from tool call results) ────────────
 
 TOOL_OUTPUTS: list[dict] = [
@@ -183,7 +182,7 @@ def main() -> None:
     print("[4] Resolved belief state (contradictions removed, winners kept):\n")
 
     losing_ids: set[str] = set()
-    for frame, (pred_a, pred_b) in zip(repairs, pairs):
+    for frame, (pred_a, pred_b) in zip(repairs, pairs, strict=False):
         loser = pred_b if frame.resolved_value == pred_a.value else pred_a
         losing_ids.add(loser.id)
 

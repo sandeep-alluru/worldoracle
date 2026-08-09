@@ -13,17 +13,14 @@ Run:
 from __future__ import annotations
 
 import time
-from collections import defaultdict
 
 from worldoracle.predicate import (
     BeliefRepairer,
     BeliefState,
     ContradictionDetector,
-    RepairFrame,
     WorldPredicate,
 )
 from worldoracle.store import WorldOracleStore
-
 
 BASE_TS = 1_750_400_000.0
 HUMAN_REVIEW_CONFIDENCE_DELTA = 0.15   # flag if |conf_a - conf_b| < 0.15
@@ -228,7 +225,7 @@ def main() -> None:
     print()
     hr("═")
     print("  MULTI-AGENT KNOWLEDGE BASE — CONFLICT REPAIR REPORT")
-    print(f"  Target:  TechCorp Inc  |  Engine: worldoracle")
+    print("  Target:  TechCorp Inc  |  Engine: worldoracle")
     print(f"  Agents:  {len(AGENTS)}  |  Date: {time.strftime('%Y-%m-%d %H:%M UTC')}")
     hr("═")
 
@@ -266,8 +263,8 @@ def main() -> None:
     print(f"      Human review needed: {len(human_review)} "
           f"(confidence delta < {HUMAN_REVIEW_CONFIDENCE_DELTA})")
 
-    consistent_facts = total_facts - len(contradictions) * 2  # rough estimate
-    consistent_final = total_facts - len(contradictions)
+    total_facts - len(contradictions) * 2  # rough estimate
+    total_facts - len(contradictions)
 
     hr()
     print()
@@ -310,12 +307,12 @@ def main() -> None:
               f"(conf={pred_b.confidence:.2f})")
         print(f"  Δ conf:     {delta:.2f}  (threshold: {HUMAN_REVIEW_CONFIDENCE_DELTA})")
         print(f"  Suggestion: {frame.resolved_value!r}  (system would pick this, but defer to human)")
-        print(f"  Action:     → FLAG FOR ANALYST REVIEW before publishing to report.")
+        print("  Action:     → FLAG FOR ANALYST REVIEW before publishing to report.")
         print()
 
     hr()
     print()
-    print(f"  FINAL KNOWLEDGE BASE SUMMARY — TechCorp Inc:")
+    print("  FINAL KNOWLEDGE BASE SUMMARY — TechCorp Inc:")
     print()
 
     # Build canonical facts (use repaired values)

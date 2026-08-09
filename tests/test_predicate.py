@@ -1,4 +1,4 @@
-"""Tests for worldoracle.predicate — WorldPredicate, BeliefState."""
+"""Tests for worldoracle.predicate - WorldPredicate, BeliefState."""
 
 from __future__ import annotations
 

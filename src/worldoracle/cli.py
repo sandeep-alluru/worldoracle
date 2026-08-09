@@ -1,4 +1,4 @@
-"""CLI for worldoracle — NPC contradiction detector and belief repair."""
+"""CLI for worldoracle - NPC contradiction detector and belief repair."""
 
 from __future__ import annotations
 
