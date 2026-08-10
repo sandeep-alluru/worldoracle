@@ -24,8 +24,9 @@ Non-Ornament:
 from __future__ import annotations
 
 from collections import Counter, defaultdict
+from collections.abc import Sequence
 from dataclasses import dataclass
-from typing import Any, Literal, Sequence
+from typing import Any, Literal
 
 from worldoracle.closed_loop import ClosedLoopError, GateOutcome
 
@@ -103,11 +104,12 @@ def _as_vote(item: AgentVote | dict[str, Any], index: int = 0) -> AgentVote:
     choice = str(item.get("choice") or item.get("vote") or item.get("value") or "").strip()
     if not choice:
         raise ValueError(f"vote for {aid!r} missing choice")
+    raw_round = item.get("round", item.get("t", 0))
     return AgentVote(
         agent_id=aid,
         choice=choice,
-        round=int(item.get("round", item.get("t", 0))),
-        confidence=float(item.get("confidence", 1.0)),
+        round=int(raw_round if raw_round is not None else 0),
+        confidence=float(item.get("confidence", 1.0) or 0.0),
     )
 
 
@@ -123,7 +125,9 @@ def _latest_round_votes(votes: Sequence[AgentVote]) -> list[AgentVote]:
     return list(best.values())
 
 
-def estimate_deadline(lambda2_hat: float, *, residual: float = 0.05, max_rounds: int = 10_000) -> int | None:
+def estimate_deadline(
+    lambda2_hat: float, *, residual: float = 0.05, max_rounds: int = 10_000
+) -> int | None:
     """Estimate rounds until residual disagreement under geometric contraction.
 
     deadline ≈ ceil( ln(residual) / ln(λ₂) ) when 0 < λ₂ < 1.
@@ -141,7 +145,7 @@ def estimate_deadline(lambda2_hat: float, *, residual: float = 0.05, max_rounds:
     val = math.log(residual) / math.log(lambda2_hat)
     if val < 0:
         return None
-    return min(max_rounds, max(0, int(math.ceil(val))))
+    return min(max_rounds, max(0, math.ceil(val)))
 
 
 def certify_consensus(
@@ -250,9 +254,7 @@ def gate_collective_consensus(
         )
 
     try:
-        cert = certify_consensus(
-            votes, min_agreement=min_agreement, max_factions=max_factions
-        )
+        cert = certify_consensus(votes, min_agreement=min_agreement, max_factions=max_factions)
     except (TypeError, ValueError) as exc:
         return GateOutcome(
             ok=False,
@@ -276,26 +278,26 @@ def gate_collective_consensus(
             consistency_score=cert.agreement,
         )
 
-    if max_rounds_without_convergence is not None:
-        if (
-            not cert.converged
-            and cert.n_rounds > max_rounds_without_convergence
-            and dec == "continue"
-        ):
-            return GateOutcome(
-                ok=False,
-                verdict="FAIL",
-                reason=(
-                    f"COLLECTIVE-CERT: n_rounds={cert.n_rounds} exceeds "
-                    f"max_rounds_without_convergence={max_rounds_without_convergence} "
-                    f"with agreement={cert.agreement:.3f} λ2_hat={cert.lambda2_hat:.3f} "
-                    f"factions={cert.faction_count} — stuck collective; escalate"
-                ),
-                exit_code=1,
-                human_required=True,
-                consistency_score=cert.agreement,
-                contradictions_found=cert.faction_count,
-            )
+    if (
+        max_rounds_without_convergence is not None
+        and not cert.converged
+        and cert.n_rounds > max_rounds_without_convergence
+        and dec == "continue"
+    ):
+        return GateOutcome(
+            ok=False,
+            verdict="FAIL",
+            reason=(
+                f"COLLECTIVE-CERT: n_rounds={cert.n_rounds} exceeds "
+                f"max_rounds_without_convergence={max_rounds_without_convergence} "
+                f"with agreement={cert.agreement:.3f} λ2_hat={cert.lambda2_hat:.3f} "
+                f"factions={cert.faction_count} — stuck collective; escalate"
+            ),
+            exit_code=1,
+            human_required=True,
+            consistency_score=cert.agreement,
+            contradictions_found=cert.faction_count,
+        )
 
     if dec == "finalize" and not cert.converged:
         return GateOutcome(

@@ -103,7 +103,8 @@ def test_estimate_deadline() -> None:
     assert estimate_deadline(0.0) == 0
     assert estimate_deadline(1.0) is None
     d = estimate_deadline(0.5, residual=0.05)
-    assert d is not None and d > 0
+    assert d is not None
+    assert d > 0
 
 
 def test_stuck_rounds_fails() -> None:
