@@ -60,7 +60,9 @@ def run_server() -> None:
         return [
             _mcp_types.Tool(
                 name="add_predicate",
-                description="Add a belief predicate to an NPC's world model.",
+                description=(
+                    "Add a belief predicate to the worldoracle knowledge base. Use when ingesting a new claim about the world. Follow with check_beliefs to detect contradictions, then repair_contradictions if needed."
+                ),
                 inputSchema={
                     "type": "object",
                     "properties": {
@@ -85,7 +87,9 @@ def run_server() -> None:
             ),
             _mcp_types.Tool(
                 name="check_beliefs",
-                description="Detect contradictions in an NPC's belief state.",
+                description=(
+                    "Detect contradictions among stored beliefs/predicates. Use after add_predicate or before acting on beliefs. Read-only detection — call repair_contradictions to fix."
+                ),
                 inputSchema={
                     "type": "object",
                     "properties": {
@@ -97,7 +101,7 @@ def run_server() -> None:
             _mcp_types.Tool(
                 name="repair_contradictions",
                 description=(
-                    "Generate repair frames for all contradictions in an NPC's belief state."
+                    "Attempt to repair detected belief contradictions (drop/revise conflicting predicates). Use after check_beliefs reports conflicts. Mutates the belief store."
                 ),
                 inputSchema={
                     "type": "object",
